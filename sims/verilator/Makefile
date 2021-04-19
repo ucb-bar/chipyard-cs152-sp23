@@ -84,6 +84,7 @@ ARIANE_VERILATOR_FLAGS = \
 
 # normal flags used for chipyard builds (that are incompatible with ariane)
 CHIPYARD_VERILATOR_FLAGS = \
+	-Wno-TIMESCALEMOD \
 	--assert
 
 VERILATOR_NONCC_OPTS = \
