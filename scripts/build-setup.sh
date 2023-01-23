@@ -170,11 +170,11 @@ if run_step "8"; then
     ./init-submodules.sh
 
     # precompile firemarshal buildroot sources
-    if run_step "9"; then
-        source $RDIR/scripts/fix-open-files.sh
-        ./marshal $VERBOSE_FLAG build br-base.json
-        ./marshal $VERBOSE_FLAG clean br-base.json
-    fi
+    #if run_step "9"; then
+        #source $RDIR/scripts/fix-open-files.sh
+        #./marshal $VERBOSE_FLAG build br-base.json
+        #./marshal $VERBOSE_FLAG clean br-base.json
+    #fi
     popd
 fi
 
