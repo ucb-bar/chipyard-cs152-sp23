@@ -190,6 +190,7 @@ cat <<EOT >> env.sh
 conda activate ${CS152_CONDA_DIR}
 source $RDIR/scripts/fix-open-files.sh
 export LAB2ROOT=${RDIR}
+unalias make &> /dev/null || true # EDA machines have make aliased which clobbers conda make
 EOT
 
 echo "Setup complete!"
