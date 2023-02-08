@@ -23,8 +23,8 @@ class CS152AbstractConfig extends Config(
 
 class CS152RocketConfig extends Config(
   new WithL1ICacheSets(64) ++
-  new WithL1ICacheWays(2) ++
-  new WithL1DCacheSets(32) ++
+  new WithL1ICacheWays(1) ++
+  new WithL1DCacheSets(64) ++
   new WithL1DCacheWays(1) ++
   new CS152AbstractConfig ++
   new WithCacheBlockBytes(64))
