@@ -199,6 +199,7 @@ sim_common_files       ?= $(build_dir)/sim_files.common.f
 #########################################################################################
 JAVA_HEAP_SIZE ?= 8G
 export JAVA_TOOL_OPTIONS ?= -Xmx$(JAVA_HEAP_SIZE) -Xss8M -Djava.io.tmpdir=$(base_dir)/.java_tmp
+export SBT_OPTS ?= -Dsbt.ivy.home=$(base_dir)/.ivy2 -Dsbt.global.base=$(base_dir)/.sbt -Dsbt.boot.directory=$(base_dir)/.sbt/boot/
 
 #########################################################################################
 # default sbt launch command
@@ -216,7 +217,7 @@ endif
 
 # passes $(JAVA_TOOL_OPTIONS) from env to java
 SBT_BIN ?= java -jar $(ROCKETCHIP_DIR)/sbt-launch.jar
-SBT = $(SBT_BIN) $(SBT_CLIENT_FLAG)
+SBT = $(SBT_BIN) $(SBT_CLIENT_FLAG) $(SBT_OPTS)
 SBT_NON_THIN = $(subst $(SBT_CLIENT_FLAG),,$(SBT))
 
 define run_scala_main
@@ -259,5 +260,5 @@ OUT_DIR ?= $(build_dir)/gen-collateral
 #########################################################################################
 # assembly/benchmark variables
 #########################################################################################
-timeout_cycles = 10000000
+timeout_cycles = 15000000
 bmark_timeout_cycles = 100000000

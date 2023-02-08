@@ -1,6 +1,6 @@
 [submodule "rocket-chip"]
 	path = generators/rocket-chip
-	url = https://github.com/chipsalliance/rocket-chip.git
+	url = https://github.com/firesim/rocket-chip.git
 [submodule "testchipip"]
 	path = generators/testchipip
 	url = https://github.com/ucb-bar/testchipip.git
@@ -99,7 +99,7 @@
 	url = https://github.com/ucb-bar/FFTGenerator.git
 [submodule "toolchains/riscv-tools/riscv-tests"]
 	path = toolchains/riscv-tools/riscv-tests
-	url = https://github.com/riscv-software-src/riscv-tests.git
+	url = https://github.com/ucb-bar/esp-tests.git
 [submodule "toolchains/riscv-tools/riscv-pk"]
 	path = toolchains/riscv-tools/riscv-pk
 	url = https://github.com/riscv-software-src/riscv-pk.git
@@ -133,3 +133,12 @@
 [submodule "generators/mempress"]
 	path = generators/mempress
 	url = https://github.com/ucb-bar/mempress.git
+[submodule "lab/open1/ccbench"]
+	path = lab/open1/ccbench
+	url = https://github.com/ucb-bar/ccbench.git
+[submodule "lab/open2/gapbs"]
+	path = lab/open2/gapbs
+	url = https://github.com/sbeamer/gapbs.git
+[submodule "lab/open3/riscv-isa-sim"]
+	path = lab/open3/riscv-isa-sim
+	url = https://github.com/riscv/riscv-isa-sim.git
