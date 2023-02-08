@@ -87,7 +87,7 @@ run_step() {
 
 {
 
-CS152_CONDA_DIR=/home/ff/cs152/sp23/chipyard-cs152-sp23/.conda-env
+CS152_CONDA_DIR=/home/ff/cs152/sp23/.lab2-conda-env
 
 # setup and install conda environment
 if run_step "1"; then
@@ -190,7 +190,9 @@ cat <<EOT >> env.sh
 conda activate ${CS152_CONDA_DIR}
 source $RDIR/scripts/fix-open-files.sh
 export LAB2ROOT=${RDIR}
+export SIMDIR=${RDIR}/sims/verilator
 unalias make &> /dev/null || true # EDA machines have make aliased which clobbers conda make
+#export ENABLE_SBT_THIN_CLIENT=1 # disable for now since this doesn't listen to sbt_opts flags
 EOT
 
 echo "Setup complete!"
