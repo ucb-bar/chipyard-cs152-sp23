@@ -58,6 +58,7 @@ include $(base_dir)/generators/tracegen/tracegen.mk
 include $(base_dir)/generators/nvdla/nvdla.mk
 include $(base_dir)/tools/dromajo/dromajo.mk
 include $(base_dir)/tools/torture.mk
+include $(base_dir)/cs152.mk
 
 #########################################################################################
 # Prerequisite lists
@@ -256,9 +257,9 @@ verilog: $(sim_common_files)
 .PHONY: run-binary run-binary-fast run-binary-debug run-fast
 
 check-binary:
-ifeq (,$(BINARY))
-	$(error BINARY variable is not set. Set it to the simulation binary)
-endif
+#ifeq (,$(BINARY))
+#	$(error BINARY variable is not set. Set it to the simulation binary)
+#endif
 
 # allow you to override sim prereq
 ifeq (,$(BREAK_SIM_PREREQ))
@@ -283,8 +284,8 @@ run-fast: run-asm-tests-fast run-bmark-tests-fast
 #########################################################################################
 # helper rules to run simulator with fast loadmem via hex files
 #########################################################################################
-$(binary_hex): $(output_dir) $(BINARY)
-	$(base_dir)/scripts/smartelf2hex.sh $(BINARY) > $(binary_hex)
+$(binary_hex): $(output_dir) $(firstword $(BINARY))
+	$(base_dir)/scripts/smartelf2hex.sh $(firstword $(BINARY)) > $(binary_hex)
 
 run-binary-hex: check-binary
 run-binary-hex: $(output_dir) $(SIM_PREREQ) $(binary_hex)

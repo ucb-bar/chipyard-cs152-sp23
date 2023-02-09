@@ -2,10 +2,6 @@
 # CS152 Lab 2: Open-Ended Problem 4.1
 ########################################################################
 
-ifndef RISCV
-$(error source ~cs152/sp21/cs152.lab2.bashrc)
-endif
-
 SHELL := /bin/bash
 
 base_dir := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -14,8 +10,8 @@ base_dir := $(base_dir:/=)
 CONFIG ?= CS152RocketMysteryConfig
 MODEL_PACKAGE ?= chipyard
 
-.PHONY: ccbench-sweep
-ccbench-sweep:
+.PHONY: default
+default: ccbench-sweep
 
 ccbench_dir := $(base_dir)/ccbench/caches
 
@@ -61,8 +57,9 @@ endef
 $(foreach size,$(ccbench_sizes),$(eval $(call ccbench_run,$(size))))
 
 ccbench_logs := $(patsubst %,$(output_dir)/ccbench-%.log,$(ccbench_sizes))
-ccbench-sweep: $(ccbench_logs)
 
+.PHONY: ccbench-sweep
+ccbench-sweep: $(ccbench_logs)
 
 ccbench_report := $(ccbench_dir)/reports/report-$(CONFIG).txt
 ccbench_plot := $(ccbench_dir)/plots/plot-$(CONFIG).pdf
