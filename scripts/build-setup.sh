@@ -191,6 +191,7 @@ conda activate ${CS152_CONDA_DIR}
 source $RDIR/scripts/fix-open-files.sh
 export LAB2ROOT=${RDIR}
 export SIMDIR=${RDIR}/sims/verilator
+source /home/ff/cs152/sp21/vcs.bashrc
 unalias make &> /dev/null || true # EDA machines have make aliased which clobbers conda make
 #export ENABLE_SBT_THIN_CLIENT=1 # disable for now since this doesn't listen to sbt_opts flags
 EOT
