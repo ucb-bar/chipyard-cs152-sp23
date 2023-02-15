@@ -26,46 +26,46 @@ function retry {
     fi
 }
 
-#export TESTDIR=${LAB2ROOT}/lab/directed
-#cd ${TESTDIR}
-#retry make
-#
-#cd ${SIMDIR}
-#retry make CONFIG=CS152RocketConfig -j4
-#
-#retry make CONFIG=CS152RocketConfig run-binary-hex BINARY=${TESTDIR}/transpose.riscv
-#
-#retry spike ${TESTDIR}/transpose.riscv
-#
-#retry make CONFIG=CS152RocketL2Config run-binary-hex BINARY=${TESTDIR}/transpose.riscv
+export TESTDIR=${LAB2ROOT}/lab/directed
+cd ${TESTDIR}
+retry make
 
-#cd ${LAB2ROOT}/lab/open1
-#retry make sim -j4
-#retry make ccbench-sweep -j4
-#
-#retry make ccbench-plot
+cd ${SIMDIR}
+retry make CONFIG=CS152RocketConfig -j4
 
-#export TESTDIR=${LAB2ROOT}/lab/open1/test 
-#cd ${TESTDIR}
-#retry make
-#
-#cd ${SIMDIR}
-#retry make CONFIG=CS152RocketMysteryConfig run-binary-hex BINARY="${TESTDIR}/bmark-p.riscv"
-#
-#retry make CONFIG=CS152RocketMysteryConfig run-pk PAYLOAD="${TESTDIR}/bmark-v.riscv"
+retry make CONFIG=CS152RocketConfig run-binary-hex BINARY=${TESTDIR}/transpose.riscv
 
-#retry make CONFIG=CS152RocketPrefetchConfig -j4
-#
-#retry make CONFIG=CS152RocketPrefetchConfig run-binary-hex BINARY="${LAB2ROOT}/lab/directed/transpose.riscv"
-#
-#retry make CONFIG=CS152RocketPrefetchConfig run-bmark-tests
+retry spike ${TESTDIR}/transpose.riscv
+
+retry make CONFIG=CS152RocketL2Config run-binary-hex BINARY=${TESTDIR}/transpose.riscv
+
+cd ${LAB2ROOT}/lab/open1
+retry make sim -j4
+retry make ccbench-sweep -j4
+
+retry make ccbench-plot
+
+export TESTDIR=${LAB2ROOT}/lab/open1/test
+cd ${TESTDIR}
+retry make
+
+cd ${SIMDIR}
+retry make CONFIG=CS152RocketMysteryConfig run-binary-hex BINARY="${TESTDIR}/bmark-p.riscv"
+
+retry make CONFIG=CS152RocketMysteryConfig run-pk PAYLOAD="${TESTDIR}/bmark-v.riscv"
+
+retry make CONFIG=CS152RocketPrefetchConfig -j4
+
+retry make CONFIG=CS152RocketPrefetchConfig run-binary-hex BINARY="${LAB2ROOT}/lab/directed/transpose.riscv"
+
+retry make CONFIG=CS152RocketPrefetchConfig run-bmark-tests
 
 cd ${LAB2ROOT}/lab/open2
 retry make
 cd ${SIMDIR}
-#retry make CONFIG=CS152RocketPrefetchConfig run-bfs
+retry make CONFIG=CS152RocketPrefetchConfig run-bfs
 
-#retry make CONFIG=CS152RocketPrefetchConfig run-binary-debug-hex BINARY="${LAB2ROOT}/lab/directed/transpose.riscv"
+retry make CONFIG=CS152RocketPrefetchConfig run-binary-debug-hex BINARY="${LAB2ROOT}/lab/directed/transpose.riscv"
 retry make CONFIG=CS152RocketPrefetchConfig run-bmark-tests-debug
 retry make CONFIG=CS152RocketPrefetchConfig run-bfs-debug
 
