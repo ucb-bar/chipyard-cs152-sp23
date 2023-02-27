@@ -1,55 +1,43 @@
 ########################################################################
-# CS152 Lab 2: Open-Ended Problem 4.2
+# CS152 Lab 3: Open-Ended Problem 2                                    #
 ########################################################################
 
-SHELL := /bin/bash
+workdir := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+workdir := $(workdir:/=)
+basedir := $(workdir)/../..
 
-ifndef RISCV
-$(error source ~cs152/sp21/cs152.lab2.bashrc)
-endif
 
-# Undefine to run in pk (required for file I/O)
-BAREMETAL ?= 1
-
-bmarks_dir := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-bmarks_dir := $(bmarks_dir:/=)
-
-CXX     := riscv64-unknown-elf-g++
+CC := riscv64-unknown-elf-gcc
 OBJDUMP := riscv64-unknown-elf-objdump
 
-CXXFLAGS := -Wno-unknown-pragmas
-ifneq ($(BAREMETAL),)
-CXXFLAGS += -specs=htif.specs -specs=htif_argv.specs -Wl,--defsym=__heap_size=8M
-endif
+CFLAGS := -O2 -std=gnu11 -Wall
 
-.PHONY: gapbs
-gapbs:
+.PHONY: all
+all: spectre.dump baremetal.dump
 
-gapbs_dir := $(bmarks_dir)/gapbs
-gapbs_conv := $(gapbs_dir)/converter
-gapbs_kernels := bfs cc sssp tc
-gapbs_bin := $(addprefix $(gapbs_dir)/,$(gapbs_kernels))
-gapbs_dump := $(addsuffix .dump, $(gapbs_kernels))
-gapbs_graph := kron10.sg
+spectre.riscv: CFLAGS += -specs=nano.specs
+baremetal.riscv: CFLAGS += -specs=htif_nano.specs
 
-$(gapbs_bin): %: $(gapbs_dir)/Makefile
-	CXX=$(CXX) CXX_FLAGS='$(CXXFLAGS)' $(MAKE) -C $(gapbs_dir) SERIAL=1 $@
+.PRECIOUS: %.riscv
+%.riscv: %.c $(wildcard *.h)
+	$(CC) $(CFLAGS) -o $@ $<
 
-$(gapbs_dump): %.dump: $(gapbs_dir)/%
-	$(OBJDUMP) -d -C $< > $@
-
-$(gapbs_conv): $(gapbs_dir)/Makefile
-	$(MAKE) -C $(gapbs_dir) $(notdir $@)
-
-$(gapbs_graph): $(gapbs_conv)
-	$< -g 10 -b $@
-
-.PHONY: gapbs
-gapbs: $(gapbs_dump) $(gapbs_graph)
+%.dump: %.riscv
+	$(OBJDUMP) -d $< > $@
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(gapbs_dir) clean
-	rm -rf -- $(gapbs_dump) $(gapbs_graph)
+	rm -f -- *.riscv *.o *.dump
+
+# Autograder submission
+
+zip_obj := upload.zip
+zip_srcs := $(wildcard Makefile *.c *.h *.S)
+
+.PHONY: zip
+zip: $(zip_srcs)
+	rm -f -- $(zip_obj)
+	zip -j $(zip_obj) $^
+
 
 .SUFFIXES: # Disable built-in suffix rules

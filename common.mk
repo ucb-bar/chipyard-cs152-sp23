@@ -306,6 +306,24 @@ run-binary-fast-hex: override LOADMEM_ADDR = 80000000
 run-binary-fast-hex: override LOADMEM = $(binary_hex)
 run-binary-fast-hex: override SIM_FLAGS += +loadmem=$(LOADMEM) +loadmem_addr=$(LOADMEM_ADDR)
 
+
+pk_hex = $(base_dir)/pk-spectre.hex
+$(pk_hex): $(output_dir)
+	$(base_dir)/scripts/smartelf2hex.sh $(LAB3ROOT)/lab/open2/pk-spectre > $(pk_hex)
+
+run-spectre-hex: $(output_dir) $(sim) $(pk_hex)
+run-spectre-hex: run-binary
+run-spectre-hex: override LOADMEM_ADDR = 80000000
+run-spectre-hex: override LOADMEM = $(pk_hex)
+run-spectre-hex: override SIM_FLAGS += +loadmem=$(LOADMEM) +loadmem_addr=$(LOADMEM_ADDR)
+
+run-spectre-debug-hex: $(output_dir) $(sim) $(pk_hex)
+run-spectre-debug-hex: run-binary-debug
+run-spectre-debug-hex: override LOADMEM_ADDR = 80000000
+run-spectre-debug-hex: override LOADMEM = $(pk_hex)
+run-spectre-debug-hex: override SIM_FLAGS += +loadmem=$(LOADMEM) +loadmem_addr=$(LOADMEM_ADDR)
+
+
 #########################################################################################
 # run assembly/benchmarks rules
 #########################################################################################

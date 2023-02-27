@@ -1,1 +1,0 @@
-The SPEC version of SoPlex may be used only for benchmarking purposes.
