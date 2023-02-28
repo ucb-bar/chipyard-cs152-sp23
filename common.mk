@@ -254,6 +254,10 @@ verilog: $(sim_common_files)
 #########################################################################################
 # helper rules to run simulations
 #########################################################################################
+# BOOM branch analysis script
+boom_bpd_count := 20
+boom_bpd_script := python3 $(base_dir)/generators/boom/util/branch-processor.py -v - $(boom_bpd_count)
+
 .PHONY: run-binary run-binary-fast run-binary-debug run-fast
 
 check-binary:
@@ -269,7 +273,7 @@ endif
 
 # run normal binary with hardware-logged insn dissassembly
 run-binary: $(output_dir) $(SIM_PREREQ) check-binary
-	(set -o pipefail && $(NUMA_PREFIX) $(sim) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(PERMISSIVE_OFF) $(BINARY) </dev/null 2> >(spike-dasm > $(sim_out_name).out) | tee $(sim_out_name).log)
+	(set -o pipefail && $(NUMA_PREFIX) $(sim) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(PERMISSIVE_OFF) $(BINARY) </dev/null 2> >(spike-dasm | $(boom_bpd_script) > $(sim_out_name).out) | tee $(sim_out_name).log)
 
 # run simulator as fast as possible (no insn disassembly)
 run-binary-fast: $(output_dir) $(SIM_PREREQ) check-binary
@@ -277,7 +281,7 @@ run-binary-fast: $(output_dir) $(SIM_PREREQ) check-binary
 
 # run simulator with as much debug info as possible
 run-binary-debug: $(output_dir) $(SIM_DEBUG_PREREQ) check-binary
-	(set -o pipefail && $(NUMA_PREFIX) $(sim_debug) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(WAVEFORM_FLAG) $(PERMISSIVE_OFF) $(BINARY) </dev/null 2> >(spike-dasm > $(sim_out_name).out) | tee $(sim_out_name).log)
+	(set -o pipefail && $(NUMA_PREFIX) $(sim_debug) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(WAVEFORM_FLAG) $(PERMISSIVE_OFF) $(BINARY) </dev/null 2> >(spike-dasm | $(boom_bpd_script) > $(sim_out_name).out) | tee $(sim_out_name).log)
 
 run-fast: run-asm-tests-fast run-bmark-tests-fast
 
@@ -337,7 +341,7 @@ $(output_dir)/%.run: $(output_dir)/% $(SIM_PREREQ)
 	(set -o pipefail && $(NUMA_PREFIX) $(sim) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(PERMISSIVE_OFF) $< </dev/null | tee $<.log) && touch $@
 
 $(output_dir)/%.out: $(output_dir)/% $(SIM_PREREQ)
-	(set -o pipefail && $(NUMA_PREFIX) $(sim) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(PERMISSIVE_OFF) $< </dev/null 2> >(spike-dasm > $@) | tee $<.log)
+	(set -o pipefail && $(NUMA_PREFIX) $(sim) $(PERMISSIVE_ON) $(SIM_FLAGS) $(EXTRA_SIM_FLAGS) $(SEED_FLAG) $(VERBOSE_FLAGS) $(PERMISSIVE_OFF) $< </dev/null 2> >(spike-dasm | $(boom_bpd_script) > $@) | tee $<.log)
 
 #########################################################################################
 # include build/project specific makefrags made from the generator
