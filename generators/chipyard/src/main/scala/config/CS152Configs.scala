@@ -1,64 +1,61 @@
 package chipyard
 
-import chisel3._
-
-import freechips.rocketchip.config.{Config, Parameters}
+import freechips.rocketchip.config.{Config}
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.subsystem._
+import freechips.rocketchip.tile.{RocketTileParams}
 
-// Do not modify
-class CS152AbstractConfig extends Config(
-  new chipyard.config.WithNPerfCounters ++
-  new chipyard.config.WithBroadcastManager ++ // remove L2
-  new freechips.rocketchip.subsystem.WithNBigCores(1) ++
-  new chipyard.config.WithSystemBusFrequencyAsDefault ++
-  new chipyard.config.WithSystemBusFrequency(500.0) ++
-  new chipyard.config.WithMemoryBusFrequency(500.0) ++
-  new chipyard.config.WithPeripheryBusFrequency(500.0) ++
-  new chipyard.config.AbstractConfig)
-
-/**********************************************************************
- * Directed Portion
- **********************************************************************/
-
-class CS152RocketConfig extends Config(
-  new WithL1ICacheSets(64) ++
-  new WithL1ICacheWays(1) ++
-  new WithL1DCacheSets(64) ++
-  new WithL1DCacheWays(1) ++
-  new CS152AbstractConfig ++
-  new WithCacheBlockBytes(64))
-
-class CS152RocketL2Config extends Config(
-  new WithNBanks(1) ++ // L2 banks
-  new WithInclusiveCache(nWays = 8, capacityKB = 64) ++
-  new CS152RocketConfig)
-
-/**********************************************************************
- * Open-Ended Problem 4.1
- **********************************************************************/
-
-class CS152RocketMysteryConfig extends Config(
-  new cs152.lab2.WithSecrets ++
-  new CS152AbstractConfig)
-
-/**********************************************************************
- * Open-Ended Problem 4.2
- **********************************************************************/
-
-// Baseline CONFIG with prefetching disabled
-class CS152RocketNoPrefetchConfig extends Config(
-  new freechips.rocketchip.subsystem.WithNonblockingL1(nMSHRs = 4) ++ // use non-blocking L1D
-  new freechips.rocketchip.subsystem.WithNBanks(2) ++ // increase number of broadcast hub trackers
-  new CS152AbstractConfig)
-
-// Evaluation CONFIG with prefetching enabled
-class CS152RocketPrefetchConfig extends Config(
-  new WithL1Prefetcher ++               // enable L1 prefetcher
-  new CS152RocketNoPrefetchConfig)
-
-// TODO: Replace the module instantiation with your own
-// e.g., CustomL1Prefetcher, ModelL1Prefetcher
-class WithL1Prefetcher extends Config((site, here, up) => {
-  case BuildL1Prefetcher => Some((p: Parameters) => Module(new ExampleL1Prefetcher()(p)))
+class WithNLab5Cores(n: Int) extends Config((site, here, up) => {
+  case RocketTilesKey => {
+    val lab5 = RocketTileParams(
+      core   = RocketCoreParams(mulDiv = Some(MulDivParams(
+        mulUnroll = 8,
+        mulEarlyOut = true,
+        divEarlyOut = true))),
+      dcache = Some(DCacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 16,
+        nWays = 4,
+        nTLBEntries = 4,
+        nMSHRs = 0,
+        blockBytes = site(CacheBlockBytes))),
+      icache = Some(ICacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 64,
+        nWays = 4,
+        nTLBEntries = 4,
+        blockBytes = site(CacheBlockBytes))))
+    List.tabulate(n)(i => lab5.copy(hartId = i))
+  }
 })
+
+class Lab5RocketConfig extends Config(
+  new chipyard.iobinders.WithUARTAdapter ++                      // display UART with a SimUARTAdapter
+  new chipyard.iobinders.WithTieOffInterrupts ++                 // tie off top-level interrupts
+  new chipyard.iobinders.WithBlackBoxSimMem ++                   // drive the master AXI4 memory with a SimAXIMem
+  new chipyard.iobinders.WithTiedOffDebug ++                     // tie off debug (since we are using SimSerial for testing)
+  new chipyard.iobinders.WithSimSerial ++                        // drive TSI with SimSerial for testing
+  new testchipip.WithTSI ++                                      // use testchipip serial offchip link
+  new chipyard.config.WithNoGPIO ++                              // no top-level GPIO pins (overrides default set in sifive-blocks)
+  new chipyard.config.WithBootROM ++                             // use default bootrom
+  new chipyard.config.WithUART ++                                // add a UART
+  new freechips.rocketchip.subsystem.WithNoMMIOPort ++           // no top-level MMIO master port (overrides default set in rocketchip)
+  new freechips.rocketchip.subsystem.WithNoSlavePort ++          // no top-level MMIO slave port (overrides default set in rocketchip)
+  new freechips.rocketchip.subsystem.WithNExtTopInterrupts(0) ++ // no external interrupts
+  new WithNLab5Cores(1) ++                                       // single rocket core
+  new freechips.rocketchip.system.BaseConfig)                    // "base" rocketchip system
+
+class Lab5MESIDualRocketConfig extends Config(
+  new freechips.rocketchip.subsystem.WithMESICoherence ++
+  new WithNLab5Cores(2) ++                                       // dual rocket cores
+  new Lab5RocketConfig)
+
+class Lab5MSIDualRocketConfig extends Config(
+  new freechips.rocketchip.subsystem.WithMSICoherence ++
+  new WithNLab5Cores(2) ++                                       // dual rocket cores
+  new Lab5RocketConfig)
+
+class Lab5MIDualRocketConfig extends Config(
+  new freechips.rocketchip.subsystem.WithMICoherence ++
+  new WithNLab5Cores(2) ++                                       // dual rocket cores
+  new Lab5RocketConfig)
