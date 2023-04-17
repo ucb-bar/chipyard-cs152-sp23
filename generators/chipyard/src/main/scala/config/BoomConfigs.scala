@@ -48,17 +48,3 @@ class DromajoBoomConfig extends Config(
   new boom.common.WithNSmallBooms(1) ++
   new chipyard.config.WithSystemBusWidth(128) ++
   new chipyard.config.AbstractConfig)
-
-class CS152BaselineBoomConfig extends Config(
-  new boom.common.WithNCS152BaselineBooms(1) ++
-  new chipyard.config.AbstractConfig)
-
-class CS152SWPredBoomConfig extends Config(
-  new boom.common.WithSWBPD ++
-  new boom.common.WithNCS152DefaultBooms(1) ++
-  new chipyard.config.AbstractConfig)
-
-class CS152SmallBoomConfig extends Config(
-  new boom.common.WithBoom2BPD ++
-  new boom.common.WithNCS152SmallBooms(1) ++
-  new chipyard.config.AbstractConfig)
