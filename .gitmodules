@@ -1,24 +1,24 @@
 [submodule "fpga/fpga-shells"]
 	path = fpga/fpga-shells
-	url = https://github.com/chipsalliance/rocket-chip-fpga-shells.git
+	url = https://gitee.com/leeeeeeeway/rocket-chip-fpga-shells.git
 [submodule "generators/bar-fetchers"]
 	path = generators/bar-fetchers
-	url = https://github.com/ucb-bar/bar-fetchers.git
+	url = https://gitee.com/leeeeeeeway/bar-fetchers.git
 [submodule "generators/boom"]
 	path = generators/boom
-	url = https://github.com/riscv-boom/riscv-boom.git
+	url = https://gitee.com/leeeeeeeway/riscv-boom.git
 [submodule "generators/caliptra-aes-acc"]
 	path = generators/caliptra-aes-acc
-	url = https://github.com/ucb-bar/caliptra-aes-acc.git
+	url = https://gitee.com/leeeeeeeway/caliptra-aes-acc.git
 [submodule "generators/constellation"]
 	path = generators/constellation
-	url = https://github.com/ucb-bar/constellation.git
+	url = https://gitee.com/leeeeeeeway/constellation.git
 [submodule "generators/cva6"]
 	path = generators/cva6
-	url = https://github.com/ucb-bar/cva6-wrapper.git
+	url = https://gitee.com/leeeeeeeway/cva6-wrapper.git
 [submodule "generators/diplomacy"]
 	path = generators/diplomacy
-	url = https://github.com/chipsalliance/diplomacy.git
+	url = https://gitee.com/leeeeeeeway/diplomacy.git
 [submodule "generators/fft-generator"]
 	path = generators/fft-generator
 	url = https://github.com/ucb-bar/FFTGenerator.git
